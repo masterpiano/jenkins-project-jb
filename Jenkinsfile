@@ -8,6 +8,8 @@ pipeline {
   environment {
         AWS_ACCESS_KEY_ID = credentials('aws_access_key_id')
         AWS_SECRET_ACCESS_KEY = credentials('aws_secret_access_key')
+        DOCKER_CREDENTIALS = credentials('docker-credentials')
+        DOCKER_IMAGE = "${DOCKER_CREDENTIALS_USR}/k8stest:${env.BUILD_NUMBER}"
   }
 
 	
@@ -17,27 +19,23 @@ pipeline {
 		stage('Build docker') {
 
 			steps {
-                script{
-                    sh "git merge --no-ff dev"
-                    withCredentials([usernamePassword(credentialsId: 'docker-credentials', usernameVariable: 'DOCKER_REPO')]) {
-                        def imageName = "${DOCKER_REPO}/k8stest:${env.BUILD_NUMBER}"
-                        def builtImage = docker.build($imageName)
-                    }
-                    // sh "docker build -t k8stest:${env.BUILD_NUMBER} ./"
-                }
+		                script{
+		                    sh "git merge --no-ff origin/dev"
+		                    def builtImage = docker.build(DOCKER_IMAGE)
+		                }
 			}
 		}
 
 		stage('Test') {
 			steps {
-				sh "docker run -td --env AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} --env AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} --env AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION} --env REPEAT_TIME_SECONDS=${REPEAT_TIME_SECONDS} --name test-container-${env.BUILD_NUMBER} $imageName"
+				sh "docker run -td --env AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} --env AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} --env AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION} --env REPEAT_TIME_SECONDS=${REPEAT_TIME_SECONDS} --name test-container-${env.BUILD_NUMBER} ${DOCKER_IMAGE}"
 				script{
 
 					sleep time: 5, unit: 'SECONDS'
-				    def containerStatus = sh(script: "docker inspect -f '{{.State.Status}}' test-container-${env.BUILD_NUMBER}", returnStdout: true).trim()
-				    echo "Container state: ${containerStatus}"
+				    	def containerStatus = sh(script: "docker inspect -f '{{.State.Status}}' test-container-${env.BUILD_NUMBER}", returnStdout: true).trim()
+				    	echo "Container state: ${containerStatus}"
 
-			        sh "docker logs test-container-${env.BUILD_NUMBER}"
+			        	sh "docker logs test-container-${env.BUILD_NUMBER}"
 		            	
 					if (containerStatus != "running") {					
 				        	error "An error occured on the last attempt to run the container of image working-ec2"
@@ -50,8 +48,7 @@ pipeline {
 			steps {
 				script{
 					docker.withRegistry('https://index.docker.io/v1/', 'docker-credentials') {
-						//sh "docker tag k8stest:${env.BUILD_NUMBER} bjrus27/k8stest:${env.BUILD_NUMBER}"
-						builtImage.push()
+						sh "docker push ${DOCKER_IMAGE}"
 					}
 				}
 			}	
@@ -60,7 +57,7 @@ pipeline {
         stage('Merge Git') {
 			steps {
 				sh "git push"
-                echo 'The pipeline worked succesfully'
+                		echo 'The pipeline worked succesfully'
 			}	
 		}
 	}
