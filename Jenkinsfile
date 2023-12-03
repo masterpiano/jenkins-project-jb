@@ -20,7 +20,7 @@ pipeline {
 
 			steps {
 		                script{
-		                    sh "git merge --no-ff origin/dev"
+		                    sh "git merge origin/dev"
 		                    def builtImage = docker.build(DOCKER_IMAGE)
 		                }
 			}
