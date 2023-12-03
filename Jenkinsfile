@@ -64,7 +64,7 @@ pipeline {
 		                        doGenerateSubmoduleConfigurations: false,
 		                        extensions: [],
 		                        submoduleCfg: [],
-		                        userRemoteConfigs: [[credentialsId: 'git-credentials', url: 'https://github.com/masterpiano/jenkins-project-jb.git']]
+		                        userRemoteConfigs: [[credentialsId: 'github-credentials', url: 'https://github.com/masterpiano/jenkins-project-jb.git']]
 		                    ]
 		                    //sh "git merge --no-ff origin/feature-branch"
 		                    //sh "git push origin main"				
