@@ -56,7 +56,10 @@ pipeline {
 
         stage('Merge Git') {
 			steps {
-				sh "git push origin main"
+			        sh "git checkout main"
+			        sh "git pull origin main"
+			        sh "git merge origin/dev"
+			        sh "git push origin main"
                 		echo 'The pipeline worked succesfully'
 			}	
 		}
