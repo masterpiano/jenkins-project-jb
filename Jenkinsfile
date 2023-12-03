@@ -55,18 +55,13 @@ pipeline {
 			}	
 		}
 
-        stage('Merge Git') {
-			steps {
-			
-		                    //sh "git merge --no-ff origin/feature-branch"
-		                    //sh "git push origin main"		
-				    sh "git config --global user.email 'jenkin@jenkins.com'"
-                                    sh "git config --global user.name 'jenkins'"
-			            sh "git push"
-                		    echo 'The pipeline worked succesfully'
-			}	
-		}
-	}
+ //        stage('Merge Git') {
+	// 		steps {
+	// 		            sh "git push"
+ //                		    echo 'The pipeline worked succesfully'
+	// 		}	
+	// 	}
+	// }
 	post { 
 		always { 
 	            cleanWs()
