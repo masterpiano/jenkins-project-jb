@@ -20,6 +20,7 @@ pipeline {
 
 			steps {
 		                script{
+				    sh "git checkout main"
 		                    sh "git merge origin/dev"
 		                    def builtImage = docker.build(DOCKER_IMAGE)
 		                }
@@ -56,10 +57,7 @@ pipeline {
 
         stage('Merge Git') {
 			steps {
-			        sh "git checkout main"
-			        sh "git pull origin main"
-			        sh "git merge origin/dev"
-			        sh "git push origin main"
+			        sh "git push"
                 		echo 'The pipeline worked succesfully'
 			}	
 		}
