@@ -58,7 +58,7 @@ pipeline {
         stage('Merge Git') {
 			steps {
 			            withCredentials([usernameColonPassword(credentialsId: 'github-credentials', variable: 'GITHUB_CRED')]) {
-					sh "git push -f https://${GITHUB_CRED}@github.com"
+					sh "git push -f https://${GITHUB_CRED}@github.com/masterpiano/jenkins-project-jb"
 			            }
                 		    echo 'The pipeline worked succesfully'
 			}	
