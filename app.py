@@ -38,11 +38,11 @@ def working_instances():
                 'Name': 'instance-state-code',
                 'Values': ['16']
             }
-            # ,
-            # {
-            #     'Name': 'tag:k8s.io/role/master',
-            #     'Values': ['1']
-            # }
+            ,
+            {
+                'Name': 'tag:k8s.io/role/master',
+                'Values': ['1']
+            }
         ]
     )
 
@@ -55,10 +55,6 @@ def working_instances():
     # Print the instance IDs and instance names
     for instance in instances:
         log_instance_out(instance)
-        # instance_id = instance['InstanceId']
-        # instance_name = next((tag['Value']
-        #                       for tag in instance['Tags'] if tag['Key'] == 'Name'), 'Unnamed')
-        # print("Instance ID: {}, Instance Name: {}".format(instance_id, instance_name))
 
 
 repeat_time = int(os.environ.get('REPEAT_TIME_SECONDS',5))
