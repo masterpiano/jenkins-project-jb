@@ -57,14 +57,11 @@ pipeline {
 
         stage('Merge Git') {
 			steps {
-		                    // Merge changes into the main branch
-		                    git branch: 'main', changelog: false, poll: false, url: [
-		                        $class: 'GitSCM',
-		                        branches: [[name: '*/main']],
-		                        userRemoteConfigs: [[credentialsId: 'github-credentials', url: 'https://github.com/masterpiano/jenkins-project-jb.git']]
-		                    ]
+			
 		                    //sh "git merge --no-ff origin/feature-branch"
-		                    //sh "git push origin main"				
+		                    //sh "git push origin main"		
+				    sh "git config --global user.email 'jenkin@jenkins.com'"
+                                    sh "git config --global user.name 'jenkins'"
 			            sh "git push"
                 		    echo 'The pipeline worked succesfully'
 			}	
